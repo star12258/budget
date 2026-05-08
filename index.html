@@ -3,315 +3,237 @@
 <html lang="zh-TW">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>💳 我的記帳本</title>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>💳 記帳本</title>
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Noto Sans TC', sans-serif; background: #0f172a; color: #e2e8f0; min-height: 100vh; padding: 16px; }
-  .app { max-width: 480px; margin: 0 auto; }
-  input, select, textarea, button { font-family: inherit; }
-  input[type=date]::-webkit-calendar-picker-indicator { filter: invert(0.5); }
-
-/* Header */
-.header { margin-bottom: 16px; }
-.header-top { display: flex; justify-content: space-between; align-items: center; }
-.header-label { font-size: 11px; color: #64748b; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 2px; }
-.header-title { font-size: 22px; font-weight: 700; color: #f1f5f9; }
-.month-input { background: #1e293b; border: 1px solid #334155; border-radius: 8px; color: #94a3b8; padding: 6px 10px; font-size: 13px; }
-
-/* Budget card */
-.budget-card { margin-top: 16px; background: #1e293b; border-radius: 12px; padding: 14px; }
-.budget-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 13px; }
-.remaining { font-weight: 700; }
-.remaining.ok { color: #10b981; }
-.remaining.warn { color: #f59e0b; }
-.remaining.over { color: #ef4444; }
-.bar-bg { background: #0f172a; border-radius: 99px; height: 8px; overflow: hidden; }
-.bar-fill { height: 100%; border-radius: 99px; transition: width 0.5s; }
-.bar-meta { display: flex; justify-content: space-between; margin-top: 6px; font-size: 12px; color: #475569; }
-.bar-meta b { color: #e2e8f0; }
-
-/* Tabs */
-.tabs { display: flex; gap: 8px; margin-bottom: 14px; }
-.tab { flex: 1; padding: 8px 0; border-radius: 8px; border: none; cursor: pointer; font-size: 13px; font-weight: 600; transition: all 0.2s; }
-.tab.active { background: #3b82f6; color: #fff; }
-.tab.inactive { background: #1e293b; color: #64748b; }
-
-/* Form */
-.card { background: #1e293b; border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
-.form-label { font-size: 11px; color: #64748b; margin-bottom: 4px; }
-.form-row { display: flex; gap: 8px; }
-.form-group { flex: 1; }
-.form-input { width: 100%; background: #0f172a; border: 1px solid #334155; border-radius: 8px; color: #e2e8f0; padding: 8px 10px; font-size: 13px; }
-.form-input:focus { outline: none; border-color: #3b82f6; }
-.btn-primary { background: #3b82f6; color: #fff; border: none; border-radius: 8px; padding: 10px; font-size: 14px; font-weight: 700; cursor: pointer; width: 100%; }
-.btn-secondary { background: #1e293b; color: #64748b; border: 1px solid #334155; border-radius: 8px; padding: 8px; font-size: 13px; cursor: pointer; width: 100%; }
-.divider { border-top: 1px solid #334155; padding-top: 12px; }
-
-/* List */
-.entry { background: #1e293b; border-radius: 10px; padding: 10px 14px; margin-bottom: 8px; display: flex; align-items: center; gap: 10px; }
-.entry-emoji { font-size: 20px; }
-.entry-info { flex: 1; }
-.entry-name { font-size: 13px; font-weight: 600; }
-.entry-meta { font-size: 11px; color: #64748b; }
-.entry-amount { font-weight: 700; color: #f1f5f9; margin-right: 4px; }
-.icon-btn { background: none; border: none; cursor: pointer; font-size: 14px; color: #64748b; padding: 2px; }
-.copy-btn { width: 100%; margin-top: 8px; background: #0f172a; border: 1px solid #334155; color: #94a3b8; border-radius: 8px; padding: 10px; font-size: 13px; cursor: pointer; }
-.empty { text-align: center; color: #475569; padding: 40px; background: #1e293b; border-radius: 12px; }
-
-/* Chart */
-.cat-row { background: #1e293b; border-radius: 10px; padding: 10px 14px; margin-bottom: 8px; }
-.cat-header { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 13px; }
-.cat-over { color: #ef4444; }
-.cat-bar-bg { background: #0f172a; border-radius: 99px; height: 6px; }
-.cat-bar-fill { height: 100%; border-radius: 99px; transition: width 0.4s; }
-
-/* Toast */
-.toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: #10b981; color: #fff; padding: 10px 20px; border-radius: 99px; font-size: 13px; font-weight: 600; opacity: 0; transition: opacity 0.3s; pointer-events: none; z-index: 999; }
-.toast.show { opacity: 1; }
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh;padding:16px;}
+.wrap{max-width:480px;margin:0 auto;}
+input,select,textarea,button{font-family:inherit;font-size:14px;}
+.hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
+.ht{font-size:20px;font-weight:700;color:#f1f5f9;}
+.hs{font-size:11px;color:#64748b;margin-bottom:2px;letter-spacing:1px;}
+input[type=month]{background:#1e293b;border:1px solid #334155;border-radius:8px;color:#94a3b8;padding:6px 10px;font-size:13px;}
+.bc{background:#1e293b;border-radius:12px;padding:14px;margin-bottom:14px;}
+.br{display:flex;justify-content:space-between;font-size:13px;margin-bottom:8px;}
+.bg{background:#0f172a;border-radius:99px;height:8px;overflow:hidden;margin-bottom:6px;}
+.bf{height:100%;border-radius:99px;transition:width .4s;}
+.bm{display:flex;justify-content:space-between;font-size:12px;color:#475569;}
+.tabs{display:flex;gap:8px;margin-bottom:14px;}
+.tab{flex:1;padding:9px 0;border-radius:8px;border:none;cursor:pointer;font-size:13px;font-weight:600;}
+.ta{background:#3b82f6;color:#fff;}
+.ti{background:#1e293b;color:#64748b;}
+.card{background:#1e293b;border-radius:12px;padding:16px;}
+.fl{font-size:11px;color:#64748b;margin-bottom:4px;}
+.fr{display:flex;gap:8px;margin-bottom:10px;}
+.fg{flex:1;}
+.fi{width:100%;background:#0f172a;border:1px solid #334155;border-radius:8px;color:#e2e8f0;padding:8px 10px;margin-bottom:10px;}
+.fi:focus{outline:none;border-color:#3b82f6;}
+.bp{background:#3b82f6;color:#fff;border:none;border-radius:8px;padding:11px;font-weight:700;cursor:pointer;width:100%;margin-bottom:8px;}
+.bs{background:#0f172a;color:#64748b;border:1px solid #334155;border-radius:8px;padding:9px;cursor:pointer;width:100%;margin-bottom:8px;}
+.dv{border-top:1px solid #334155;padding-top:12px;margin-top:4px;}
+.en{background:#1e293b;border-radius:10px;padding:10px 14px;margin-bottom:8px;display:flex;align-items:center;gap:10px;}
+.ei{flex:1;}
+.en2{font-size:13px;font-weight:600;}
+.em{font-size:11px;color:#64748b;}
+.ea{font-weight:700;margin-right:4px;}
+.ib{background:none;border:none;cursor:pointer;font-size:15px;padding:2px 4px;color:#64748b;}
+.cb{width:100%;margin-top:8px;background:#0f172a;border:1px solid #334155;color:#94a3b8;border-radius:8px;padding:10px;font-size:13px;cursor:pointer;}
+.ep{text-align:center;color:#475569;padding:40px;background:#1e293b;border-radius:12px;font-size:14px;}
+.cr{background:#1e293b;border-radius:10px;padding:10px 14px;margin-bottom:8px;}
+.ch{display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px;}
+.cg{background:#0f172a;border-radius:99px;height:6px;}
+.cf{height:100%;border-radius:99px;transition:width .4s;}
+.ok{color:#10b981;}.wn{color:#f59e0b;}.ov{color:#ef4444;}
+.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);background:#10b981;color:#fff;padding:10px 22px;border-radius:99px;font-size:13px;font-weight:600;opacity:0;transition:opacity .3s;pointer-events:none;z-index:999;white-space:nowrap;}
+.show{opacity:1;}
 </style>
-
 </head>
 <body>
-<div class="app" id="app"></div>
-<div class="toast" id="toast">✅ 已儲存！</div>
-
+<div class="wrap" id="root"></div>
+<div class="toast" id="toast">OK</div>
 <script>
-const CATEGORIES = ["網購","外送","餐飲","零售","超商","交通","訂閱","娛樂","其他"];
-const EMOJI = {網購:"🛒",外送:"🧋",餐飲:"🍱",零售:"🛍️",超商:"🏪",交通:"🚌",訂閱:"🎵",娛樂:"🎮",其他:"📌"};
-const GOALS = {網購:2500,外送:1500,餐飲:1500,零售:3000,超商:1500,交通:0,訂閱:500,娛樂:500,其他:500};
-const BUDGET = 20000;
+var CATS=["網購","外送","餐飲","零售","超商","交通","訂閱","娛樂","其他"];
+var EMJ={"網購":"🛒","外送":"🧋","餐飲":"🍱","零售":"🛍️","超商":"🏪","交通":"🚌","訂閱":"🎵","娛樂":"🎮","其他":"📌"};
+var CLIMIT={"網購":2500,"外送":1500,"餐飲":1500,"零售":3000,"超商":1500,"交通":0,"訂閱":500,"娛樂":500,"其他":500};
+var BUDGET=20000;
+var d=new Date();
+var cm=d.getFullYear()+"-"+(d.getMonth()+1<10?"0":"")+(d.getMonth()+1);
+var S={tab:"add",month:cm,editId:null};
 
-let tab = "add";
-let editId = null;
-const now = new Date();
-let month = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,"0")}`;
+function gE(){try{return JSON.parse(localStorage.getItem(“exp-”+S.month)||”[]”);}catch(e){return[];}}
+function sE(a){try{localStorage.setItem(“exp-”+S.month,JSON.stringify(a));}catch(e){}}
+function gN(){try{return localStorage.getItem(“note-”+S.month)||””;}catch(e){return “”;}}
+function sN(n){try{localStorage.setItem(“note-”+S.month,n);}catch(e){}}
+function tw(s){var p=s.split(”-”);return (parseInt(p[0])-1911)+”/”+p[1]+”/”+p[2];}
+function ml(){var p=S.month.split(”-”);return (parseInt(p[0])-1911)+“年”+parseInt(p[1])+“月”;}
 
-function getEntries() {
-  try { return JSON.parse(localStorage.getItem(`exp-${month}`) || "[]"); } catch { return []; }
-}
-function saveEntries(arr) {
-  localStorage.setItem(`exp-${month}`, JSON.stringify(arr));
-}
-function getNote() { return localStorage.getItem(`note-${month}`) || ""; }
-function saveNote(n) { localStorage.setItem(`note-${month}`, n); }
+function toast(msg){var t=document.getElementById(“toast”);t.textContent=msg;t.className=“toast show”;setTimeout(function(){t.className=“toast”;},2000);}
 
-function getTWDate(d) {
-  const [y,m,dd] = d.split("-");
-  return `${+y-1911}/${m}/${dd}`;
-}
-
-function getMonthLabel() {
-  const [y,m] = month.split("-");
-  return `${+y-1911}年${+m}月`;
-}
-
-function showToast(msg) {
-  const t = document.getElementById("toast");
-  t.textContent = msg;
-  t.classList.add("show");
-  setTimeout(() => t.classList.remove("show"), 2000);
+function getSummary(){
+var en=gE();
+var tot=en.reduce(function(s,e){return s+e.amount;},0);
+var rem=BUDGET-tot;
+var bc={};
+CATS.forEach(function(c){bc[c]=en.filter(function(e){return e.category===c;}).reduce(function(s,e){return s+e.amount;},0);});
+var lines=[“月份：”+S.month,“目標：”+BUDGET,“總計：”+tot+”（剩 “+rem+”）”,””,“類別小計：”];
+CATS.forEach(function(c){if(bc[c]>0)lines.push(EMJ[c]+” “+c+”：”+bc[c]);});
+var note=gN();
+if(note){lines.push(””,“備註：”,note);}
+lines.push(””,“明細：”);
+en.slice().sort(function(a,b){return a.date>b.date?1:-1;}).forEach(function(e){lines.push(tw(e.date)+” | “+e.category+” | “+e.item+” | “+e.amount);});
+return lines.join(”\n”);
 }
 
-function getSummary() {
-  const entries = getEntries();
-  const total = entries.reduce((s,e)=>s+e.amount,0);
-  const remaining = BUDGET - total;
-  const bycat = {};
-  CATEGORIES.forEach(c => bycat[c] = entries.filter(e=>e.category===c).reduce((s,e)=>s+e.amount,0));
-  const lines = [
-    `📅 月份：${month.replace("-","/")}月`,
-    `💰 目標上限：${BUDGET.toLocaleString()}`,
-    `📊 本月總計：${total.toLocaleString()}（剩餘 ${remaining.toLocaleString()}）`,
-    ``,`--- 類別小計 ---`
-  ];
-  CATEGORIES.forEach(c => { if(bycat[c]>0) lines.push(`${EMOJI[c]} ${c}：${bycat[c].toLocaleString()}`); });
-  const note = getNote();
-  if(note) { lines.push("","--- 備註 ---", note); }
-  lines.push("","--- 明細 ---");
-  [...entries].sort((a,b)=>a.date.localeCompare(b.date)).forEach(e=>{
-    lines.push(`${getTWDate(e.date)} | ${e.category} | ${e.item} | ${e.amount}`);
-  });
-  return lines.join("\n");
-}
-
-function render() {
-  const entries = getEntries();
-  const total = entries.reduce((s,e)=>s+e.amount,0);
-  const remaining = BUDGET - total;
-  const pct = Math.min((total/BUDGET)*100,100);
-  const barColor = pct>90?"#ef4444":pct>70?"#f59e0b":"#10b981";
-  const remClass = remaining<0?"over":pct>70?"warn":"ok";
-  const bycat = {};
-  CATEGORIES.forEach(c => bycat[c] = entries.filter(e=>e.category===c).reduce((s,e)=>s+e.amount,0));
-  const sorted = [...entries].sort((a,b)=>b.date.localeCompare(a.date));
-  const todayStr = now.toISOString().split("T")[0];
-  const note = getNote();
-
-  // Edit form pre-fill
-  let ef = { date: todayStr, category: "餐飲", item: "", amount: "" };
-  if(editId !== null) {
-    const found = entries.find(e=>e.id===editId);
-    if(found) ef = { date: found.date, category: found.category, item: found.item, amount: String(found.amount) };
-  }
-
-  document.getElementById("app").innerHTML = `
-    <div class="header">
-      <div class="header-top">
-        <div>
-          <div class="header-label">Monthly Budget</div>
-          <div class="header-title">💳 我的記帳本</div>
-        </div>
-        <input class="month-input" type="month" id="monthInput" value="${month}">
-      </div>
-      <div class="budget-card">
-        <div class="budget-row">
-          <span style="color:#94a3b8">${getMonthLabel()} 已花費</span>
-          <span class="remaining ${remClass}">
-            剩 ${remaining<0?"⚠️ 超支 ":""}${Math.abs(remaining).toLocaleString()} 元
-          </span>
-        </div>
-        <div class="bar-bg"><div class="bar-fill" style="width:${pct}%;background:${barColor}"></div></div>
-        <div class="bar-meta">
-          <span>已用 <b>${total.toLocaleString()}</b></span>
-          <span>目標 <b>${BUDGET.toLocaleString()}</b></span>
-        </div>
-      </div>
-    </div>
-
-    <div class="tabs">
-      <button class="tab ${tab==="add"?"active":"inactive"}" onclick="switchTab('add')">➕ 記帳</button>
-      <button class="tab ${tab==="list"?"active":"inactive"}" onclick="switchTab('list')">📋 明細</button>
-      <button class="tab ${tab==="chart"?"active":"inactive"}" onclick="switchTab('chart')">📊 分析</button>
-    </div>
-
-    ${tab==="add" ? `
-    <div class="card">
-      <div style="font-size:14px;font-weight:600;color:#94a3b8">${editId?"✏️ 編輯紀錄":"新增消費"}</div>
-      <div class="form-row">
-        <div class="form-group">
-          <div class="form-label">日期</div>
-          <input class="form-input" type="date" id="fDate" value="${ef.date}">
-        </div>
-        <div class="form-group">
-          <div class="form-label">類別</div>
-          <select class="form-input" id="fCat">
-            ${CATEGORIES.map(c=>`<option value="${c}" ${ef.category===c?"selected":""}>${EMOJI[c]} ${c}</option>`).join("")}
-          </select>
-        </div>
-      </div>
-      <div>
-        <div class="form-label">消費項目</div>
-        <input class="form-input" type="text" id="fItem" placeholder="例：迷客夏珍珠奶茶" value="${ef.item}">
-      </div>
-      <div>
-        <div class="form-label">金額（元）</div>
-        <input class="form-input" type="number" id="fAmt" placeholder="0" value="${ef.amount}">
-      </div>
-      <button class="btn-primary" onclick="handleAdd()">${editId?"更新紀錄":"新增 ＋"}</button>
-      ${editId?`<button class="btn-secondary" onclick="cancelEdit()">取消編輯</button>`:""}
-      <div class="divider">
-        <div class="form-label">備註（代墊 / 一次性支出）</div>
-        <textarea class="form-input" id="fNote" rows="2" placeholder="例：埃及展幫朋友代墊 500，待還">${note}</textarea>
+function render(){
+try{
+var en=gE();
+var tot=en.reduce(function(s,e){return s+e.amount;},0);
+var rem=BUDGET-tot;
+var pct=Math.min(tot/BUDGET*100,100);
+var bc=pct>90?”#ef4444”:pct>70?”#f59e0b”:”#10b981”;
+var rc=rem<0?“ov”:pct>70?“wn”:“ok”;
+var bycat={};
+CATS.forEach(function(c){bycat[c]=en.filter(function(e){return e.category===c;}).reduce(function(s,e){return s+e.amount;},0);});
 
 ```
-  </div>
-</div>` : ""}
-
-${tab==="list" ? `
-<div>
-  ${sorted.length===0 ? `<div class="empty">還沒有記錄哦～</div>` :
-    sorted.map(e=>`
-    <div class="entry">
-      <div class="entry-emoji">${EMOJI[e.category]}</div>
-      <div class="entry-info">
-        <div class="entry-name">${e.item}</div>
-        <div class="entry-meta">${getTWDate(e.date)} · ${e.category}</div>
-      </div>
-      <div class="entry-amount">$ ${e.amount.toLocaleString()}</div>
-      <button class="icon-btn" onclick="handleEdit(${e.id})">✏️</button>
-      <button class="icon-btn" onclick="handleDelete(${e.id})">🗑️</button>
-    </div>`).join("")}
-  <button class="copy-btn" onclick="handleCopy()">📋 複製摘要 → 貼給 Claude 分析</button>
-</div>` : ""}
-
-${tab==="chart" ? `
-<div>
-  ${entries.length===0 ? `<div class="empty">還沒有記錄哦～</div>` :
-    CATEGORIES.map(cat => {
-      const spent = bycat[cat];
-      const goal = GOALS[cat];
-      if(spent===0 && goal===0) return "";
-      const p = goal>0 ? Math.min((spent/goal)*100,100) : 0;
-      const over = goal>0 && spent>goal;
-      const bc = over?"#ef4444":p>70?"#f59e0b":"#10b981";
-      return `
-      <div class="cat-row">
-        <div class="cat-header">
-          <span>${EMOJI[cat]} ${cat}</span>
-          <span class="${over?"cat-over":""}">${spent.toLocaleString()}${goal>0?" / "+goal.toLocaleString():" （無目標）"}${over?" ⚠️":""}</span>
-        </div>
-        ${goal>0?`<div class="cat-bar-bg"><div class="cat-bar-fill" style="width:${p}%;background:${bc}"></div></div>`:""}
-      </div>`;
-    }).join("")}
-</div>` : ""}
-```
-
-`;
-
-document.getElementById(“monthInput”)?.addEventListener(“change”, e => {
-month = e.target.value;
-editId = null;
-render();
-});
-
-document.getElementById(“fNote”)?.addEventListener(“input”, e => saveNote(e.target.value));
-document.getElementById(“fItem”)?.addEventListener(“keydown”, e => { if(e.key===“Enter”) handleAdd(); });
-document.getElementById(“fAmt”)?.addEventListener(“keydown”, e => { if(e.key===“Enter”) handleAdd(); });
+var ef={date:d.toISOString().split("T")[0],category:"餐飲",item:"",amount:""};
+if(S.editId!==null){
+  var found=null;
+  for(var i=0;i<en.length;i++){if(en[i].id===S.editId){found=en[i];break;}}
+  if(found){ef={date:found.date,category:found.category,item:found.item,amount:String(found.amount)};}
 }
 
-function switchTab(t) { tab = t; render(); }
+var catOpts="";
+for(var ci=0;ci<CATS.length;ci++){
+  var c=CATS[ci];
+  catOpts+='<option value="'+c+'"'+(ef.category===c?' selected':'')+'>'+EMJ[c]+" "+c+'</option>';
+}
 
-function handleAdd() {
-const date = document.getElementById(“fDate”)?.value;
-const category = document.getElementById(“fCat”)?.value;
-const item = document.getElementById(“fItem”)?.value?.trim();
-const amount = +document.getElementById(“fAmt”)?.value;
-if(!item || !amount || isNaN(amount)) return;
-let entries = getEntries();
-if(editId !== null) {
-entries = entries.map(e => e.id===editId ? {…e, date, category, item, amount} : e);
-editId = null;
+var addH='<div class="card">'
+  +'<div style="font-size:14px;font-weight:600;color:#94a3b8;margin-bottom:10px">'+(S.editId?"✏️ 編輯":"新增消費")+'</div>'
+  +'<div class="fr">'
+  +'<div class="fg"><div class="fl">日期</div><input class="fi" type="date" id="fD" value="'+ef.date+'" style="margin-bottom:0"></div>'
+  +'<div class="fg"><div class="fl">類別</div><select class="fi" id="fC" style="margin-bottom:0">'+catOpts+'</select></div>'
+  +'</div>'
+  +'<div style="margin-top:10px"><div class="fl">消費項目</div><input class="fi" type="text" id="fI" placeholder="例：迷客夏珍珠奶茶" value="'+ef.item+'"></div>'
+  +'<div><div class="fl">金額（元）</div><input class="fi" type="number" id="fA" placeholder="0" inputmode="numeric" value="'+ef.amount+'"></div>'
+  +'<button class="bp" onclick="doAdd()">'+(S.editId?"更新紀錄":"新增 ＋")+'</button>'
+  +(S.editId?'<button class="bs" onclick="doCancel()">取消編輯</button>':"")
+  +'<div class="dv"><div class="fl">備註（代墊 / 一次性）</div>'
+  +'<textarea class="fi" id="fN" rows="2" placeholder="例：幫朋友代墊 500 待還" oninput="sN(this.value)">'+gN()+'</textarea></div>'
+  +'</div>';
+
+var sorted=en.slice().sort(function(a,b){return a.date<b.date?1:-1;});
+var listH='<div>';
+if(sorted.length===0){
+  listH+='<div class="ep">還沒有記錄哦～<br>去➕記帳頁新增吧</div>';
 } else {
-entries.push({ id: Date.now(), date, category, item, amount });
+  for(var li=0;li<sorted.length;li++){
+    var e=sorted[li];
+    listH+='<div class="en">'
+      +'<div style="font-size:20px">'+EMJ[e.category]+'</div>'
+      +'<div class="ei"><div class="en2">'+e.item+'</div><div class="em">'+tw(e.date)+" · "+e.category+'</div></div>'
+      +'<div class="ea">$'+e.amount+'</div>'
+      +'<button class="ib" onclick="doEdit('+e.id+')">✏️</button>'
+      +'<button class="ib" onclick="doDel('+e.id+')">🗑️</button>'
+      +'</div>';
+  }
+  listH+='<button class="cb" onclick="doCopy()">📋 複製摘要 貼給 Claude 分析</button>';
 }
-saveEntries(entries);
-showToast(“✅ 已儲存！”);
+listH+='</div>';
+
+var chartH='<div>';
+if(en.length===0){
+  chartH+='<div class="ep">還沒有記錄哦～</div>';
+} else {
+  for(var ki=0;ki<CATS.length;ki++){
+    var cat=CATS[ki];
+    var sp=bycat[cat];var gl=CLIMIT[cat];
+    if(sp===0&&gl===0)continue;
+    var p2=gl>0?Math.min(sp/gl*100,100):0;
+    var over=gl>0&&sp>gl;
+    var bc2=over?"#ef4444":p2>70?"#f59e0b":"#10b981";
+    chartH+='<div class="cr"><div class="ch"><span>'+EMJ[cat]+" "+cat+'</span>'
+      +'<span'+(over?' class="ov"':'')+'>'+sp+(gl>0?" / "+gl:" （無目標）")+(over?" ⚠️":"")+'</span></div>'
+      +(gl>0?'<div class="cg"><div class="cf" style="width:'+p2+'%;background:'+bc2+'"></div></div>':"")
+      +'</div>';
+  }
+}
+chartH+='</div>';
+
+var html='<div class="hd">'
+  +'<div><div class="hs">MONTHLY BUDGET</div><div class="ht">💳 我的記帳本</div></div>'
+  +'<input type="month" value="'+S.month+'" onchange="chMon(this.value)" style="background:#1e293b;border:1px solid #334155;border-radius:8px;color:#94a3b8;padding:6px 10px;font-size:13px;">'
+  +'</div>'
+  +'<div class="bc">'
+  +'<div class="br"><span style="color:#94a3b8">'+ml()+' 已花費</span>'
+  +'<span class="'+rc+'">'+(rem<0?"⚠️ 超支 ":"")+Math.abs(rem).toLocaleString()+" 元剩</span></div>"
+  +'<div class="bg"><div class="bf" style="width:'+pct+'%;background:'+bc+'"></div></div>'
+  +'<div class="bm"><span>已用 <b style="color:#e2e8f0">'+tot.toLocaleString()+'</b></span><span>目標 <b style="color:#e2e8f0">'+BUDGET.toLocaleString()+'</b></span></div>'
+  +'</div>'
+  +'<div class="tabs">'
+  +'<button class="tab '+(S.tab==="add"?"ta":"ti")+'" onclick="setTab(\'add\')">➕ 記帳</button>'
+  +'<button class="tab '+(S.tab==="list"?"ta":"ti")+'" onclick="setTab(\'list\')">📋 明細</button>'
+  +'<button class="tab '+(S.tab==="chart"?"ta":"ti")+'" onclick="setTab(\'chart\')">📊 分析</button>'
+  +'</div>'
+  +(S.tab==="add"?addH:S.tab==="list"?listH:chartH);
+
+document.getElementById("root").innerHTML=html;
+```
+
+} catch(err){
+document.getElementById(“root”).innerHTML=’<div style="padding:20px;color:#ef4444;">錯誤：’+err.message+’</div>’;
+}
+}
+
+function setTab(t){S.tab=t;render();}
+function chMon(v){S.month=v;S.editId=null;render();}
+
+function doAdd(){
+var fD=document.getElementById(“fD”);
+var fC=document.getElementById(“fC”);
+var fI=document.getElementById(“fI”);
+var fA=document.getElementById(“fA”);
+if(!fD||!fC||!fI||!fA)return;
+var item=fI.value.trim();
+var amount=parseFloat(fA.value);
+if(!item||isNaN(amount)||amount<=0){toast(“請填寫項目和金額”);return;}
+var en=gE();
+var entry={id:Date.now(),date:fD.value,category:fC.value,item:item,amount:amount};
+if(S.editId!==null){
+for(var i=0;i<en.length;i++){if(en[i].id===S.editId){en[i]=entry;en[i].id=S.editId;break;}}
+S.editId=null;
+} else {
+en.push(entry);
+}
+sE(en);
+toast(“✅ 已儲存！”);
 render();
 }
 
-function handleEdit(id) {
-editId = id;
-tab = “add”;
-render();
+function doEdit(id){S.editId=id;S.tab=“add”;render();}
+function doCancel(){S.editId=null;render();}
+
+function doDel(id){
+if(!confirm(“確定刪除？”))return;
+var en=gE().filter(function(e){return e.id!==id;});
+sE(en);render();
 }
 
-function cancelEdit() {
-editId = null;
-render();
+function doCopy(){
+var txt=getSummary();
+if(navigator.clipboard&&navigator.clipboard.writeText){
+navigator.clipboard.writeText(txt).then(function(){toast(“✅ 已複製！去貼給 Claude 吧”);}).catch(function(){fbCopy(txt);});
+} else {fbCopy(txt);}
 }
 
-function handleDelete(id) {
-if(!confirm(“確定刪除這筆記錄？”)) return;
-const entries = getEntries().filter(e => e.id !== id);
-saveEntries(entries);
-render();
-}
-
-function handleCopy() {
-const text = getSummary();
-navigator.clipboard.writeText(text).then(() => showToast(“✅ 已複製！去貼給 Claude 吧”));
+function fbCopy(txt){
+var ta=document.createElement(“textarea”);
+ta.value=txt;ta.style.cssText=“position:fixed;opacity:0;top:0;left:0;”;
+document.body.appendChild(ta);ta.focus();ta.select();
+try{document.execCommand(“copy”);toast(“✅ 已複製！”);}catch(e){toast(“請手動複製”);}
+document.body.removeChild(ta);
 }
 
 render();
