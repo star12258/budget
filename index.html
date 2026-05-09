@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>💳 記帳本</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh;padding:16px;}
+.wrap{max-width:480px;margin:0 auto;}
+input,select,textarea,button{font-family:inherit;font-size:14px;}
+.hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
+.ht{font-size:20px;font-weight:700;color:#f1f5f9;}
+.hs{font-size:11px;color:#64748b;margin-bottom:2px;letter-spacing:1px;}
+input[type=month]{background:#1e293b;border:1px solid #334155;border-radius:8px;color:#94a3b8;padding:6px 10px;font-size:13px;}
+.bc{background:#1e293b;border-radius:12px;padding:14px;margin-bottom:14px;}
+.br{display:flex;justify-content:space-between;font-size:13px;margin-bottom:8px;}
+.bg{background:#0f172a;border-radius:99px;height:8px;overflow:hidden;margin-bottom:6px;}
+.bf{height:100%;border-radius:99px;transition:width .4s;}
+.bm{display:flex;justify-content:space-between;font-size:12px;color:#475569;}
+.tabs{display:flex;gap:8px;margin-bottom:14px;}
+.tab{flex:1;padding:9px 0;border-radius:8px;border:none;cursor:pointer;font-size:13px;font-weight:600;}
+.ta{background:#3b82f6;color:#fff;}
+.ti{background:#1e293b;color:#64748b;}
+.card{background:#1e293b;border-radius:12px;padding:16px;}
+.fl{font-size:11px;color:#64748b;margin-bottom:4px;}
+.fr{display:flex;gap:8px;margin-bottom:10px;}
+.fg{flex:1;}
+.fi{width:100%;background:#0f172a;border:1px solid #334155;border-radius:8px;color:#e2e8f0;padding:8px 10px;margin-bottom:10px;}
+.fi:focus{outline:none;border-color:#3b82f6;}
+.bp{background:#3b82f6;color:#fff;border:none;border-radius:8px;padding:11px;font-weight:700;cursor:pointer;width:100%;margin-bottom:8px;}
+.bs{background:#0f172a;color:#64748b;border:1px solid #334155;border-radius:8px;padding:9px;cursor:pointer;width:100%;margin-bottom:8px;}
+.dv{border-top:1px solid #334155;padding-top:12px;margin-top:4px;}
+.en{background:#1e293b;border-radius:10px;padding:10px 14px;margin-bottom:8px;display:flex;align-items:center;gap:10px;}
+.ei{flex:1;}
+.en2{font-size:13px;font-weight:600;}
+.em{font-size:11px;color:#64748b;}
+.ea{font-weight:700;margin-right:4px;}
+.ib{background:none;border:none;cursor:pointer;font-size:15px;padding:2px 4px;color:#64748b;}
+.cb{width:100%;margin-top:8px;background:#0f172a;border:1px solid #334155;color:#94a3b8;border-radius:8px;padding:10px;font-size:13px;cursor:pointer;}
+.ep{text-align:center;color:#475569;padding:40px;background:#1e293b;border-radius:12px;font-size:14px;}
+.cr{background:#1e293b;border-radius:10px;padding:10px 14px;margin-bottom:8px;}
+.ch{display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px;}
+.cg{background:#0f172a;border-radius:99px;height:6px;}
+.cf{height:100%;border-radius:99px;transition:width .4s;}
+.ok{color:#10b981;}.wn{color:#f59e0b;}.ov{color:#ef4444;}
+.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);background:#10b981;color:#fff;padding:10px 22px;border-radius:99px;font-size:13px;font-weight:600;opacity:0;transition:opacity .3s;pointer-events:none;z-index:999;white-space:nowrap;}
+.show{opacity:1;}
+</style>
+</head>
+<body>
+<div class="wrap" id="root"></div>
+<div class="toast" id="toast">OK</div>
+<script>
+var CATS=["網購","外送","餐飲","零售","超商","交通","訂閱","娛樂","其他"];
+var EMJ={"網購":"🛒","外送":"🧋","餐飲":"🍱","零售":"🛍️","超商":"🏪","交通":"🚌","訂閱":"🎵","娛樂":"🎮","其他":"📌"};
+var CLIMIT={"網購":2500,"外送":1500,"餐飲":1500,"零售":3000,"超商":1500,"交通":0,"訂閱":500,"娛樂":500,"其他":500};
+var BUDGET=20000;
+var d=new Date();
+var cm=d.getFullYear()+"-"+(d.getMonth()+1<10?"0":"")+(d.getMonth()+1);
+var S={tab:"add",month:cm,editId:null};
+
+function gE(){try{return JSON.parse(localStorage.getItem(“exp-”+S.month)||”[]”);}catch(e){return[];}}
+function sE(a){try{localStorage.setItem(“exp-”+S.month,JSON.stringify(a));}catch(e){}}
+function gN(){try{return localStorage.getItem(“note-”+S.month)||””;}catch(e){return “”;}}
+function sN(n){try{localStorage.setItem(“note-”+S.month,n);}catch(e){}}
+function tw(s){var p=s.split(”-”);return (parseInt(p[0])-1911)+”/”+p[1]+”/”+p[2];}
+function ml(){var p=S.month.split(”-”);return (parseInt(p[0])-1911)+“年”+parseInt(p[1])+“月”;}
+
+function toast(msg){var t=document.getElementById(“toast”);t.textContent=msg;t.className=“toast show”;setTimeout(function(){t.className=“toast”;},2000);}
+
+function getSummary(){
+var en=gE();
+var tot=en.reduce(function(s,e){return s+e.amount;},0);
+var rem=BUDGET-tot;
+var bc={};
+CATS.forEach(function(c){bc[c]=en.filter(function(e){return e.category===c;}).reduce(function(s,e){return s+e.amount;},0);});
+var lines=[“月份：”+S.month,“目標：”+BUDGET,“總計：”+tot+”（剩 “+rem+”）”,””,“類別小計：”];
+CATS.forEach(function(c){if(bc[c]>0)lines.push(EMJ[c]+” “+c+”：”+bc[c]);});
+var note=gN();
+if(note){lines.push(””,“備註：”,note);}
+lines.push(””,“明細：”);
+en.slice().sort(function(a,b){return a.date>b.date?1:-1;}).forEach(function(e){lines.push(tw(e.date)+” | “+e.category+” | “+e.item+” | “+e.amount);});
+return lines.join(”\n”);
+}
+
+function render(){
+try{
+var en=gE();
+var tot=en.reduce(function(s,e){return s+e.amount;},0);
+var rem=BUDGET-tot;
+var pct=Math.min(tot/BUDGET*100,100);
+var bc=pct>90?”#ef4444”:pct>70?”#f59e0b”:”#10b981”;
+var rc=rem<0?“ov”:pct>70?“wn”:“ok”;
+var bycat={};
+CATS.forEach(function(c){bycat[c]=en.filter(function(e){return e.category===c;}).reduce(function(s,e){return s+e.amount;},0);});
+
+```
+var ef={date:d.toISOString().split("T")[0],category:"餐飲",item:"",amount:""};
+if(S.editId!==null){
+  var found=null;
+  for(var i=0;i<en.length;i++){if(en[i].id===S.editId){found=en[i];break;}}
+  if(found){ef={date:found.date,category:found.category,item:found.item,amount:String(found.amount)};}
+}
+
+var catOpts="";
+for(var ci=0;ci<CATS.length;ci++){
+  var c=CATS[ci];
+  catOpts+='<option value="'+c+'"'+(ef.category===c?' selected':'')+'>'+EMJ[c]+" "+c+'</option>';
+}
+
+var addH='<div class="card">'
+  +'<div style="font-size:14px;font-weight:600;color:#94a3b8;margin-bottom:10px">'+(S.editId?"✏️ 編輯":"新增消費")+'</div>'
+  +'<div class="fr">'
+  +'<div class="fg"><div class="fl">日期</div><input class="fi" type="date" id="fD" value="'+ef.date+'" style="margin-bottom:0"></div>'
+  +'<div class="fg"><div class="fl">類別</div><select class="fi" id="fC" style="margin-bottom:0">'+catOpts+'</select></div>'
+  +'</div>'
+  +'<div style="margin-top:10px"><div class="fl">消費項目</div><input class="fi" type="text" id="fI" placeholder="例：迷客夏珍珠奶茶" value="'+ef.item+'"></div>'
+  +'<div><div class="fl">金額（元）</div><input class="fi" type="number" id="fA" placeholder="0" inputmode="numeric" value="'+ef.amount+'"></div>'
+  +'<button class="bp" onclick="doAdd()">'+(S.editId?"更新紀錄":"新增 ＋")+'</button>'
+  +(S.editId?'<button class="bs" onclick="doCancel()">取消編輯</button>':"")
+  +'<div class="dv"><div class="fl">備註（代墊 / 一次性）</div>'
+  +'<textarea class="fi" id="fN" rows="2" placeholder="例：幫朋友代墊 500 待還" oninput="sN(this.value)">'+gN()+'</textarea></div>'
+  +'</div>';
+
+var sorted=en.slice().sort(function(a,b){return a.date<b.date?1:-1;});
+var listH='<div>';
+if(sorted.length===0){
+  listH+='<div class="ep">還沒有記錄哦～<br>去➕記帳頁新增吧</div>';
+} else {
+  for(var li=0;li<sorted.length;li++){
+    var e=sorted[li];
+    listH+='<div class="en">'
+      +'<div style="font-size:20px">'+EMJ[e.category]+'</div>'
+      +'<div class="ei"><div class="en2">'+e.item+'</div><div class="em">'+tw(e.date)+" · "+e.category+'</div></div>'
+      +'<div class="ea">$'+e.amount+'</div>'
+      +'<button class="ib" onclick="doEdit('+e.id+')">✏️</button>'
+      +'<button class="ib" onclick="doDel('+e.id+')">🗑️</button>'
+      +'</div>';
+  }
+  listH+='<button class="cb" onclick="doCopy()">📋 複製摘要 貼給 Claude 分析</button>';
+}
+listH+='</div>';
+
+var chartH='<div>';
+if(en.length===0){
+  chartH+='<div class="ep">還沒有記錄哦～</div>';
+} else {
+  for(var ki=0;ki<CATS.length;ki++){
+    var cat=CATS[ki];
+    var sp=bycat[cat];var gl=CLIMIT[cat];
+    if(sp===0&&gl===0)continue;
+    var p2=gl>0?Math.min(sp/gl*100,100):0;
+    var over=gl>0&&sp>gl;
+    var bc2=over?"#ef4444":p2>70?"#f59e0b":"#10b981";
+    chartH+='<div class="cr"><div class="ch"><span>'+EMJ[cat]+" "+cat+'</span>'
+      +'<span'+(over?' class="ov"':'')+'>'+sp+(gl>0?" / "+gl:" （無目標）")+(over?" ⚠️":"")+'</span></div>'
+      +(gl>0?'<div class="cg"><div class="cf" style="width:'+p2+'%;background:'+bc2+'"></div></div>':"")
+      +'</div>';
+  }
+}
+chartH+='</div>';
+
+var html='<div class="hd">'
+  +'<div><div class="hs">MONTHLY BUDGET</div><div class="ht">💳 我的記帳本</div></div>'
+  +'<input type="month" value="'+S.month+'" onchange="chMon(this.value)" style="background:#1e293b;border:1px solid #334155;border-radius:8px;color:#94a3b8;padding:6px 10px;font-size:13px;">'
+  +'</div>'
+  +'<div class="bc">'
+  +'<div class="br"><span style="color:#94a3b8">'+ml()+' 已花費</span>'
+  +'<span class="'+rc+'">'+(rem<0?"⚠️ 超支 ":"")+Math.abs(rem).toLocaleString()+" 元剩</span></div>"
+  +'<div class="bg"><div class="bf" style="width:'+pct+'%;background:'+bc+'"></div></div>'
+  +'<div class="bm"><span>已用 <b style="color:#e2e8f0">'+tot.toLocaleString()+'</b></span><span>目標 <b style="color:#e2e8f0">'+BUDGET.toLocaleString()+'</b></span></div>'
+  +'</div>'
+  +'<div class="tabs">'
+  +'<button class="tab '+(S.tab==="add"?"ta":"ti")+'" onclick="setTab(\'add\')">➕ 記帳</button>'
+  +'<button class="tab '+(S.tab==="list"?"ta":"ti")+'" onclick="setTab(\'list\')">📋 明細</button>'
+  +'<button class="tab '+(S.tab==="chart"?"ta":"ti")+'" onclick="setTab(\'chart\')">📊 分析</button>'
+  +'</div>'
+  +(S.tab==="add"?addH:S.tab==="list"?listH:chartH);
+
+document.getElementById("root").innerHTML=html;
+```
+
+} catch(err){
+document.getElementById(“root”).innerHTML=’<div style="padding:20px;color:#ef4444;">錯誤：’+err.message+’</div>’;
+}
+}
+
+function setTab(t){S.tab=t;render();}
+function chMon(v){S.month=v;S.editId=null;render();}
+
+function doAdd(){
+var fD=document.getElementById(“fD”);
+var fC=document.getElementById(“fC”);
+var fI=document.getElementById(“fI”);
+var fA=document.getElementById(“fA”);
+if(!fD||!fC||!fI||!fA)return;
+var item=fI.value.trim();
+var amount=parseFloat(fA.value);
+if(!item||isNaN(amount)||amount<=0){toast(“請填寫項目和金額”);return;}
+var en=gE();
+var entry={id:Date.now(),date:fD.value,category:fC.value,item:item,amount:amount};
+if(S.editId!==null){
+for(var i=0;i<en.length;i++){if(en[i].id===S.editId){en[i]=entry;en[i].id=S.editId;break;}}
+S.editId=null;
+} else {
+en.push(entry);
+}
+sE(en);
+toast(“✅ 已儲存！”);
+render();
+}
+
+function doEdit(id){S.editId=id;S.tab=“add”;render();}
+function doCancel(){S.editId=null;render();}
+
+function doDel(id){
+if(!confirm(“確定刪除？”))return;
+var en=gE().filter(function(e){return e.id!==id;});
+sE(en);render();
+}
+
+function doCopy(){
+var txt=getSummary();
+if(navigator.clipboard&&navigator.clipboard.writeText){
+navigator.clipboard.writeText(txt).then(function(){toast(“✅ 已複製！去貼給 Claude 吧”);}).catch(function(){fbCopy(txt);});
+} else {fbCopy(txt);}
+}
+
+function fbCopy(txt){
+var ta=document.createElement(“textarea”);
+ta.value=txt;ta.style.cssText=“position:fixed;opacity:0;top:0;left:0;”;
+document.body.appendChild(ta);ta.focus();ta.select();
+try{document.execCommand(“copy”);toast(“✅ 已複製！”);}catch(e){toast(“請手動複製”);}
+document.body.removeChild(ta);
+}
+
+render();
+</script>
+
+</body>
+</html>
